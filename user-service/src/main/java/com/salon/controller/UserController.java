@@ -1,5 +1,6 @@
 package com.salon.controller;
 
+import com.salon.exception.UserException;
 import com.salon.model.User;
 import com.salon.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -30,14 +31,14 @@ public class UserController {
         if (user.isPresent()) {
             return user.get();
         }
-        throw new Exception("User not found");
+        throw new UserException("User not found");
     }
 
     @PutMapping("/api/users/{id}")
     public User updateUser(@RequestBody User user, @PathVariable Long id) throws Exception {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isEmpty()) {
-            throw new Exception("User not found with id " + id);
+            throw new UserException("User not found with id " + id);
         }
 
         User existingUser = userOptional.get();
@@ -54,7 +55,7 @@ public class UserController {
     public String deleteUserById(@PathVariable Long id) throws Exception {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isEmpty()) {
-            throw new Exception("User doesn't exist with id " + id);
+            throw new UserException("User doesn't exist with id " + id);
         }
         userRepository.deleteById(userOptional.get().getId());
         return "User deleted with id " + id;
